@@ -7,8 +7,6 @@ https://www.mermaidchart.com/app/projects/465b1188-9ffa-4b4e-8c78-512b514f3581/d
 
 📌 System Components Overview
 
-Each component plays a specific role in handling airline data and notifying users.
-
 1️⃣ Event System (RabbitMQ/Kafka)
 
 * A message queue that enables communication between microservices.
@@ -22,20 +20,46 @@ Each component plays a specific role in handling airline data and notifying user
 3️⃣ Scheduler (Microservice)
 
 * Inserts "PullSystemData" events into the Event Queue.
-* Runs on a time-based schedule (e.g., every hour) to trigger data pulling.
+* Runs on a time-based schedule (e.g., every 30 seconds) to trigger data pulling for relevant APIs.
+
+  Data Structers:
+    AggregatorMeta - defines for each API call to collect data the relevant data required:
+      * UID - some unique ID so we could compare delta of data.
+      * URI - endpoint to call to.
+      * Interval - how many minutes between each API call to that service
 
 4️⃣ Puller (Microservice)
 
 * Listens for "PullSystemData" events from the Event Queue.
 * Calls airline and price compare websites APIs to fetch updated flight prices.
-* Stores the new flight data in the database.
+* Stores the new/updated flight data in the database.
 * Emits "CheckUserAlerts" events for every location included in "From" and "To" flight destinations updated.
+
+  Data Structres:
+     FlightData - Holds data for each flight:
+      * Date - Date of Flight
+      * Time - Time of Flight
+      * FlightCompany - Company that manages the flight.
+      * FlightNumber - Number of flight
+      * DepartingFrom - Where the flight is departing from.
+      * ArrivingAt - Where the flight is arriving to.
+      * Connections - collection of connections for the flight.
+      * Seats - collection of SeatData.
+      * FlightStatus - hold the status of flights (we should probably only offer alerts regarding flights that are either OnSchedule or Delayed)
+      * Airplane model - model of used airplane.
+  -
+      SeatData - Holds data for each seat in a flight.
+          * Number - number of seat (usually following by a letter)
+          * Price - price to pay for the seat (basic price without additional ammeneties)
+          * AvailableAmmeneties - ammeneties that are available to this seat spot.
+          * Class - specified class for this seat, usually determines price and different available ammeneties. (Economy/Buisness/etc.).
+  
 
 5️⃣ AlertChecker (Microservice)
 
 * Listens for "CheckUserAlerts" events.
 * Compares new prices with users' alerts in the database.
-* If a flight price is within a user's preferred range, it creates an "AlertUser" event.
+* If a flight price is within a user's preferred range, and connections for flight isn't above what the user set to, it creates an "AlertUser" event.
 
 6️⃣ AlertNotifier (Microservice)
 
@@ -61,3 +85,11 @@ These are messages exchanged between components.
 
     Created by AlertChecker and consumed by AlertNotifier.
     Notifies the system that a user should be alerted about a price drop.
+
+Code Improvement Suggestions:
+
+* Add logging throughout the system for failures, warnings, and debug information.
+* Add Unit testing framework and test for the various business logic at a unit level.
+* In case the system provide services to big numbers of users and has heavy usage:
+    * Add ElasticSearch and use it to search for the relevant UserAlert when triggering NotifyUser
+    * Add caching to basic required user information (like country, used currency)
