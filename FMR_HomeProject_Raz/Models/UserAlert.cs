@@ -13,5 +13,6 @@ namespace AirfarePriceAlertSystem.Models
         public string From { get; set; } = string.Empty;
         public string To { get; set; } = string.Empty;
         public decimal MaxPrice { get; set; }
+        public int MaxConnections { get; set; } = 0;
     }
 }

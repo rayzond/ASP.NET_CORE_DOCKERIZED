@@ -54,10 +54,10 @@ void SeedMockData(ApplicationDbContext context)
 
         var userAlerts = new List<UserAlert>
         {
-            new UserAlert { UserUID = 1, From = "JFK", To = "LAX", MaxPrice = 300 },
-            new UserAlert { UserUID = 1, From = "JFK", To = "IL-TLV", MaxPrice = 350 },
-            new UserAlert { UserUID = 2, From = "LHR", To = "JFK", MaxPrice = 500 },
-            new UserAlert { UserUID = 3, From = "YYZ", To = "SFO", MaxPrice = 400 }
+            new UserAlert { UserUID = 1, From = "JFK", To = "LAX", MaxPrice = 300, MaxConnections = 0 },
+            new UserAlert { UserUID = 1, From = "JFK", To = "IL-TLV", MaxPrice = 350, MaxConnections = 3 },
+            new UserAlert { UserUID = 2, From = "LHR", To = "JFK", MaxPrice = 500, MaxConnections = 0 },
+            new UserAlert { UserUID = 3, From = "YYZ", To = "SFO", MaxPrice = 400, MaxConnections = 1 }
         };
 
         context.UserAlerts.AddRange(userAlerts);

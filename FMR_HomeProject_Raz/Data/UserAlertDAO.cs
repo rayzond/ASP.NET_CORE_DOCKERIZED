@@ -44,6 +44,7 @@ namespace AirfarePriceAlertSystem.Data
             existingAlert.From = userAlert.From;
             existingAlert.To = userAlert.To;
             existingAlert.MaxPrice = userAlert.MaxPrice;
+            existingAlert.MaxConnections = userAlert.MaxConnections;
 
             _context.SaveChanges();
             return true;
