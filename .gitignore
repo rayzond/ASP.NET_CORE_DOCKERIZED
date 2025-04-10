@@ -2,8 +2,8 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/FMR_HomeProject_Raz/.vs
 /.vs
-/FMR_HomeProject_Raz/bin/Debug/net8.0
-/FMR_HomeProject_Raz/Controllers/UserAlertsController.cs
-/FMR_HomeProject_Raz/obj
+*/.vs/
+*/obj/
+*/bin/
+*.jfm
